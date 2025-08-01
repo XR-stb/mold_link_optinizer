@@ -34,7 +34,8 @@ public:
 
     bool RegCallbackFunc(std::function<void()> func, const std::string& name) {
         callbacks_.push_back({func, name});
-        std::cout << "Registered callback: " << name << std::endl;
+        // std::cout << "Registered callback: " << name << std::endl; // 下面的REGISTER_FUNC用inline时cout还没初始化这里会coredump
+        printf("Registered callback: %s\n", name.c_str());
         return true;
     }
 
@@ -45,7 +46,11 @@ public:
     }
 };
 
-// 宏定义：用于注册初始化函数
+// 这里inline 会被链接时被优化掉
 #define REGISTER_FUNC(init_func) \
+    __attribute__((unused)) inline bool FILE_UNIQUE_VAR = \
+        CallbackManager::Instance().RegCallbackFunc(init_func, #init_func)
+
+#define REGISTER_FUNC_STATIC(init_func) \
     __attribute__((unused)) static bool FILE_UNIQUE_VAR = \
         CallbackManager::Instance().RegCallbackFunc(init_func, #init_func)
