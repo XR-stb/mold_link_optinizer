@@ -1,4 +1,5 @@
 #include "init/init.h"
+#include <iostream> // why here need include?
 namespace test {
 // 测试初始化函数
 void init_function_1() {
@@ -6,13 +7,10 @@ void init_function_1() {
 }
 REGISTER_FUNC(init_function_1);
 
-void init_function_2() {
-    std::cout << "Initialization function 2 called!" << std::endl;
+void func4() {
+    std::cout << "func4" << std::endl;
 }
-REGISTER_FUNC(init_function_2);
+REGISTER_FUNC(func4);
 
-void func3() {
-    std::cout << "func3" << std::endl;
-}
-REGISTER_FUNC(func3);
+void tmpfun(){}
 }
