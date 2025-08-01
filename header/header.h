@@ -2,21 +2,9 @@
 #include <string>
 #include <vector>
 #include <functional>
-
-// 模拟注册回调函数
-enum Timing {
-    kTimingInitialize,
-    kTimingPostInitialize,
-};
-
-enum Priority {
-    kPriorityLow,
-    kPriorityHigh,
-};
+#include "marco/marco.h"
 
 struct CallbackInfo {
-    Timing timing;
-    Priority priority;
     std::function<void()> func;
     std::string name;
 };
@@ -44,9 +32,9 @@ public:
         return instance;
     }
 
-    bool RegCallbackFunc(Timing timing, Priority priority, std::function<void()> func, const std::string& name) {
-        callbacks_.push_back({timing, priority, func, name});
-        std::cout << "Registered callback: " << name << " (Timing: " << timing << ", Priority: " << priority << ")" << std::endl;
+    bool RegCallbackFunc(std::function<void()> func, const std::string& name) {
+        callbacks_.push_back({func, name});
+        std::cout << "Registered callback: " << name << std::endl;
         return true;
     }
 
@@ -59,5 +47,5 @@ public:
 
 // 宏定义：用于注册初始化函数
 #define REGISTER_FUNC(init_func) \
-    __attribute__((unused)) static inline bool FILE_UNIQUE_VAR = \
-        CallbackManager::Instance().RegCallbackFunc(kTimingInitialize, kPriorityHigh, init_func, #init_func)
+    __attribute__((unused)) static bool FILE_UNIQUE_VAR = \
+        CallbackManager::Instance().RegCallbackFunc(init_func, #init_func)

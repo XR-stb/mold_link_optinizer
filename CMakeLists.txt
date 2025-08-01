@@ -9,8 +9,9 @@ set(CMAKE_C_COMPILER "clang")
 set(CMAKE_CXX_COMPILER "clang++")
 
 # 设置C++标准
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF) # 禁用GNU扩展，使用标准C++
 
 find_program(MOLD_LINKER mold)
 
@@ -30,6 +31,8 @@ file(GLOB_RECURSE CPP_SOURCES
     "${CMAKE_SOURCE_DIR}/*.cpp"
 )
 
+message("Status: CPP_SOURCES: ${CPP_SOURCES}")
+
 # 排除构建目录下的所有文件
 file(GLOB_RECURSE BUILD_DIR_FILES
     "${CMAKE_BINARY_DIR}/*"
@@ -37,6 +40,12 @@ file(GLOB_RECURSE BUILD_DIR_FILES
 list(REMOVE_ITEM CPP_SOURCES ${BUILD_DIR_FILES})
 
 message(STATUS "Final source files: ${CPP_SOURCES}")
+
+# 包含头文件目录
+include_directories(
+    ${CMAKE_SOURCE_DIR}
+    ${CMAKE_SOURCE_DIR}/init
+)
 
 # 添加可执行文件（只包含.cpp文件）
 add_executable(reg_test ${CPP_SOURCES})
